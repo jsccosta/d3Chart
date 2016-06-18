@@ -4,10 +4,10 @@
   <head>
     <meta charset="utf-8">
     <title></title>
-    <script type="text/javascript" src="d3.v2.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.js"></script>
     <script>
         // Load the data asynchronously.
-        d3.json('/browsers.json', function(data, error) {
+        d3.json('/browsers.json', function(error, data) {
 
             // Handle errors getting or parsing the JSON data.
             if (error) {
@@ -25,6 +25,7 @@
 
             var browserList = items.map(function(d){return d.name;}),
                 browserNames = d3.set(browserList).values();
+
 
             // create category scale with 10 levels
             var cScale = d3.scale.category10()
