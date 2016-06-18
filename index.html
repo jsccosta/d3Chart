@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <script type="text/javascript" src="d3.v2.min.js"></script>
+    <script>
+        // Load the data asynchronously.
+        d3.json('/browsers.json', function(data, error) {
+
+            // Handle errors getting or parsing the JSON data.
+            if (error) {
+                console.error('Error accessing or parsing the JSON file.');
+                return error;
+            }
+
+            // Get the items and sort them by usage
+            var items = data.values;
+            items.sort(function(a, b) { return b.usage - a.usage; });
+
+            // size of viz container
+            var width = 700,
+                height = 200;
+
+            var force = d3.layout.force()
+              .nodes(items)
+              .links([])
+              .size([width,height]);
+
+            // start force simulator
+            force.start();
+
+            d3.select('pre#force-item')
+              .text(JSON.stringify(items[0], null, ' '));
+
+
+        });
+    </script>
+  </head>
+  <body>
+    <h1 class="section-title">Load Data</h1>
+
+  <!-- Example of a data item -->
+  <div class="chart-example">
+    <pre id="force-item"></pre>
+</div>
+
+  </body>
+</html>
