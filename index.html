@@ -23,6 +23,14 @@
             var width = 700,
                 height = 200;
 
+            var browserList = items.map(function(d){return d.name;}),
+                browserNames = d3.set(browserList).values();
+
+            // create category scale with 10 levels
+            var cScale = d3.scale.category10()
+              .domain(browserNames);
+
+
             var force = d3.layout.force()
               .nodes(items)
               .links([])
@@ -47,7 +55,10 @@
               .style('position', 'absolute')
               .style('width', '10px')
               .style('height','10px')
-              .style('background-color','#222');
+              .style('border-radius', '5px')
+              .style('background-color', function(d){
+                return cScale(d.name);
+              });
 
             // register a listener function for the force tick event, and
             // update the position of each tick on tick
@@ -57,6 +68,34 @@
                 .style('top', function(d){ return (d.y - 5) + 'px'; })
                 .style('left', function(d){ return (d.x - 5) + 'px'; })
             })
+
+            /*
+
+        // Create a selection for the bubble divs, bind the data
+        // array and set its attributes.
+        var bubbleDivs = containerDiv.selectAll('div.bubble')
+            .data(items)
+            .enter()
+            .append('div')
+            .attr('class', 'bubble')
+            .style('position', 'absolute')
+            .style('width', '10px')
+            .style('height', '10px')
+            .style('border-radius', '5px')
+            .style('background-color', function(d) {
+                // Set the color corresponding to the browser.
+                return cScale(d.name);
+            });
+
+        // Register a listener function for the force tick event, and
+        // update the position of each div on tick.
+        force.on('tick', function() {
+            bubbleDivs
+                .style('top', function(d) { return (d.y - 5) + 'px'; })
+                .style('left', function(d) { return (d.x - 5)+ 'px'; });
+        });
+    });
+            */
 
         });
     </script>
