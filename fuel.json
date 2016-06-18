@@ -1,0 +1,41 @@
+{
+  "name": "Fuel Consumption",
+  "values": [
+    {
+      "name": "Butane",
+      "tonnage": 221130
+    },
+    {
+      "name": "Propane",
+      "tonnage": 569650
+    },
+    {
+      "name": "GPL",
+      "tonnage": 30143
+    },
+    {
+      "name": "Gas 95",
+      "tonnage": 1014719
+    },
+    {
+      "name": "Gas 98",
+      "tonnage": 78028
+    },
+    {
+      "name": "Diesel",
+      "tonnage": 4088244
+    },
+    {
+      "name": "Heating Diesel",
+      "tonnage": 105749
+    },
+    {
+      "name": "BioDiesel",
+      "tonnage": 4935
+    },
+    {
+      "name": "Fuel",
+      "tonnage": 403087
+    }
+  ]
+}
