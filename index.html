@@ -26,14 +26,37 @@
             var force = d3.layout.force()
               .nodes(items)
               .links([])
-              .size([width,height]);
+              .size([width,height])
+              .start();
 
-            // start force simulator
-            force.start();
+            var containerDiv = d3.select('pre#force-item')
+              .style('position','relative')
+              .style('width', width + 'px')
+              .style('height', height + 'px')
+              .style('padding', 0)
+              .style('background-color', '#eeeeec');
 
-            d3.select('pre#force-item')
-              .text(JSON.stringify(items[0], null, ' '));
+            // create a selection for the bubble divs, bind the data
+            // array and set its attributes
 
+            var bubbleDivs = containerDiv.selectAll('div.bubble')
+              .data(items)
+              .enter()
+              .append('div')
+              .attr('class', 'bubble')
+              .style('position', 'absolute')
+              .style('width', '10px')
+              .style('height','10px')
+              .style('background-color','#222');
+
+            // register a listener function for the force tick event, and
+            // update the position of each tick on tick
+
+            force.on('tick', function(){
+              bubbleDivs
+                .style('top', function(d){ return (d.y - 5) + 'px'; })
+                .style('left', function(d){ return (d.x - 5) + 'px'; })
+            })
 
         });
     </script>
