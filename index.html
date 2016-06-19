@@ -6,6 +6,86 @@
     <title></title>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.js"></script>
     <script>
+
+    function legendChart(){
+      var cScale = d3.scale.category20();
+
+      // key function
+      var key = function(d){ return d.name; };
+
+      var label = function(d){ return d.name; };
+
+      // legend width
+      var width = 200;
+
+      //charting function
+      function chart(selection){
+        selection.each(function(data){
+          var containerDiv = d3.select(this)
+          .style('width', width + 'px');
+
+          // add the label 'legend' on enter
+          containerDiv.selectAll('p.legend-title')
+            .data([data])
+            .enter()
+            .append('p')
+            .attr('class', 'legend-title')
+            .text('Legend');
+
+          // add a div for each data item
+          var itemDiv = containerDiv.selectAll('div.item')
+            .data(data)
+            .enter()
+            .append('div')
+            .attr('class', 'item');
+
+          // add a paragraph in the div and set arrtibutes
+          var itemP = itemDiv.append('p')
+            .style('line-height', '0.8em')
+            .style('font-size', '11px');
+
+          // add two points as markers
+          itemP.append('span').text('..')
+            .style('color', function(d){ return cScale(d.name); })
+            .style('background', function(d){ return cScale(d.name); });
+
+          // append the text showing the label
+          itemP.append('text')
+            .text(label);
+        });
+      }
+      // Accessor methods
+      // color accessor
+      chart.colorScale = function(value){
+        if(!arguments.length){return cScale;}
+        cScale = value;
+        return chart;
+      };
+
+      // width Accessor
+      chart.width = function(value){
+        if(!arguments.length){return width;}
+        width = value;
+        return chart;
+      };
+
+      // label Accessor
+      chart.label = function(labelAccessor){
+        if(!arguments.length){ return label; }
+        label = labelAccessor;
+        return chart;
+      }
+
+      // key Accessor
+      chart.key = function(keyAccessor){
+        if(!arguments.length){ return key; }
+        key = keyAccessor;
+        return chart;
+      }
+
+      return chart;
+    };
+
     function bubbleChart() {
 
   // Chart Attributes
@@ -148,11 +228,52 @@ d3.json('/browsers.json', function(error, data) {
   if (error) { return error; }
 
   var chart = bubbleChart()
-      .width(500);
+      .width(400);
 
   d3.select('#chart1e')
       .data([data.values])
+      .style('float', 'left')
+      .style('margin', '2px')
       .call(chart);
+
+    // get color scale of chart
+    var cScale = chart.colorScale();
+
+    var browsers = d3.map();
+
+    // add up usage for each Browser
+    data.values.forEach(function(d){
+      var item = browsers.get(d.name);
+      if(item){
+        browsers.set(d.name, {
+          name: d.name,
+          usage: d.usage + item.usage
+        });
+      } else {
+        browsers.set(d.name, {
+          name: d.name,
+          usage: d.usage
+        });
+      }
+    });
+
+    var browserItems = browsers.values().sort(function(a,b){
+      return b.usage - a.usage;
+    });
+
+    // create instance of legend chart
+    var legend = legendChart()
+      .colorScale(cScale)
+      .label(function(d){
+        return ' ' + d.name + ' (' + d.usage.toFixed(2) + '%)';
+      });
+
+    // select container of the legend and invoke legend function
+    var legendDiv = d3.select('#legend1')
+      .data([browserItems])
+      .style('float', 'left')
+      .style('margin', '2px')
+      .call(legend);
 });
     </script>
   </head>
@@ -163,6 +284,8 @@ d3.json('/browsers.json', function(error, data) {
   <div class="chart-example">
     <pre id="chart1e"></pre>
 </div>
+<div class="chart-example" id="legend1"></div>
+<div style="clear: left;"></div>
 
   </body>
 </html>
